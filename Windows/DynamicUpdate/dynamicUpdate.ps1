@@ -1,3 +1,12 @@
+<#
+    Update Windows 10 media with Dynamic Update Powershell script.
+
+    Latest and untouched version available on the Microsoft Docs website:
+    https://docs.microsoft.com/en-us/windows/deployment/update/media-dynamic-update
+    
+    Modified by me to meet my requirements.
+#>
+
 #Requires -RunAsAdministrator
 
 Set-Location -Path $PSScriptRoot
