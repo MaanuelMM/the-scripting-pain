@@ -125,10 +125,6 @@ Move-Item -Path $WORKING_PATH"\boot2.wim" -Destination $MEDIA_NEW_PATH"\sources\
 # Update Main OS
 #
 
-# Add .NET 3.5 optional component
-Write-Output "$(Get-TS): Adding NetFX3~~~~"
-Add-WindowsCapability -Name "NetFX3~~~~" -Path $MAIN_OS_MOUNT -Source $MEDIA_NEW_PATH"\sources\sxs" -ErrorAction stop | Out-Null
-
 Get-ChildItem $SSU_PATH -File | Sort-Object -Property Name | ForEach-Object {
     # Add servicing stack update
     Write-Output "$(Get-TS): Adding package $_"
@@ -141,12 +137,6 @@ Get-ChildItem $LCU_PATH -File | Sort-Object -Property Name | ForEach-Object {
     Add-WindowsPackage -Path $MAIN_OS_MOUNT -PackagePath $_.FullName -ErrorAction stop | Out-Null
 }
 
-Get-ChildItem $DOTNET_CU_PATH -File | Sort-Object -Property Name | ForEach-Object {
-    # Add .NET cumulative update
-    Write-Output "$(Get-TS): Adding package $_"
-    Add-WindowsPackage -Path $MAIN_OS_MOUNT -PackagePath $_.FullName -ErrorAction stop | Out-Null
-}
-
 Get-ChildItem $FLASH_CU_PATH -File | Sort-Object -Property Name | ForEach-Object {
     # Add Flash Player cumulative update
     Write-Output "$(Get-TS): Adding package $_"
@@ -154,13 +144,21 @@ Get-ChildItem $FLASH_CU_PATH -File | Sort-Object -Property Name | ForEach-Object
 }
 
 # Copy our updated recovery image from earlier into the main OS
-# Note: If I were updating more than 1 edition, I'd want to copy the same recovery image file
-# into each edition to enable single instancing
 Copy-Item -Path $WORKING_PATH"\winre.wim" -Destination $MAIN_OS_MOUNT"\windows\system32\recovery\winre.wim" -Force -Recurse -ErrorAction stop | Out-Null
 
 # Perform image cleanup
 Write-Output "$(Get-TS): Performing image cleanup on main OS"
 DISM /image:$MAIN_OS_MOUNT /cleanup-image /StartComponentCleanup | Out-Null
+
+# Add .NET 3.5 optional component
+Write-Output "$(Get-TS): Adding NetFX3~~~~"
+Add-WindowsCapability -Name "NetFX3~~~~" -Path $MAIN_OS_MOUNT -Source $MEDIA_NEW_PATH"\sources\sxs" -ErrorAction stop | Out-Null
+
+Get-ChildItem $DOTNET_CU_PATH -File | Sort-Object -Property Name | ForEach-Object {
+    # Add .NET cumulative update
+    Write-Output "$(Get-TS): Adding package $_"
+    Add-WindowsPackage -Path $MAIN_OS_MOUNT -PackagePath $_.FullName -ErrorAction stop | Out-Null
+}
 
 # Dismount
 Dismount-WindowsImage -Path $MAIN_OS_MOUNT -Save -ErrorAction stop | Out-Null
