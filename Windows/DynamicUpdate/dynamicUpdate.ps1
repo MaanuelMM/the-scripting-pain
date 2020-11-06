@@ -8,6 +8,7 @@
 #>
 
 #Requires -RunAsAdministrator
+#Requires -Module Dism
 
 Set-Location -Path $PSScriptRoot
 
