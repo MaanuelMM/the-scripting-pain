@@ -174,9 +174,11 @@ Move-Item -Path $WORKING_PATH"\install2.wim" -Destination $MEDIA_NEW_PATH"\sourc
 # Update remaining files on media
 #
 
-# Add Setup DU by copy the files from the package into the newMedia
-Write-Output "$(Get-TS): Adding package $SETUP_DU_PATH"
-cmd.exe /c $env:SystemRoot\System32\expand.exe $SETUP_DU_PATH -F:* $MEDIA_NEW_PATH"\sources" | Out-Null
+Get-ChildItem $SETUP_DU_PATH -File | Sort-Object -Property Name | ForEach-Object {
+    # Add Setup DU by copy the files from the package into the newMedia
+    Write-Output "$(Get-TS): Adding package $_"
+    cmd.exe /c $env:SystemRoot\System32\expand.exe $_.FullName -F:* $MEDIA_NEW_PATH"\sources" | Out-Null
+}
 
 #
 # Perform final cleanup
