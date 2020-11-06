@@ -1,5 +1,7 @@
 #Requires -RunAsAdministrator
 
+Set-Location -Path $PSScriptRoot
+
 function Get-TS { return "{0:HH:mm:ss}" -f [DateTime]::Now }
 
 Write-Output "$(Get-TS): Starting media refresh"
@@ -9,23 +11,23 @@ $LANG  = "ja-jp"
 $LANG_FONT_CAPABILITY = "jpan"
 
 # Declare media for FOD and LPs
-$FOD_ISO_PATH    = "C:\mediaRefresh\packages\FOD-PACKAGES_OEM_PT1_amd64fre_MULTI.iso"
-$LP_ISO_PATH     = "C:\mediaRefresh\packages\CLIENTLANGPACKDVD_OEM_MULTI.iso"
+$FOD_ISO_PATH    = ".\mediaRefresh\packages\FOD-PACKAGES_OEM_PT1_amd64fre_MULTI.iso"
+$LP_ISO_PATH     = ".\mediaRefresh\packages\CLIENTLANGPACKDVD_OEM_MULTI.iso"
 
 # Declare Dynamic Update packages
-$LCU_PATH        = "C:\mediaRefresh\packages\LCU.msu"
-$SSU_PATH        = "C:\mediaRefresh\packages\SSU_DU.msu"
-$SETUP_DU_PATH   = "C:\mediaRefresh\packages\Setup_DU.cab"
-$SAFE_OS_DU_PATH = "C:\mediaRefresh\packages\SafeOS_DU.cab"
-$DOTNET_CU_PATH  = "C:\mediaRefresh\packages\DotNet_CU.msu"
+$LCU_PATH        = ".\mediaRefresh\packages\LCU.msu"
+$SSU_PATH        = ".\mediaRefresh\packages\SSU_DU.msu"
+$SETUP_DU_PATH   = ".\mediaRefresh\packages\Setup_DU.cab"
+$SAFE_OS_DU_PATH = ".\mediaRefresh\packages\SafeOS_DU.cab"
+$DOTNET_CU_PATH  = ".\mediaRefresh\packages\DotNet_CU.msu"
 
 # Declare folders for mounted images and temp files
-$MEDIA_OLD_PATH  = "C:\mediaRefresh\oldMedia"
-$MEDIA_NEW_PATH  = "C:\mediaRefresh\newMedia"
-$WORKING_PATH    = "C:\mediaRefresh\temp"
-$MAIN_OS_MOUNT   = "C:\mediaRefresh\temp\MainOSMount"
-$WINRE_MOUNT     = "C:\mediaRefresh\temp\WinREMount"
-$WINPE_MOUNT     = "C:\mediaRefresh\temp\WinPEMount"
+$MEDIA_OLD_PATH  = ".\mediaRefresh\oldMedia"
+$MEDIA_NEW_PATH  = ".\mediaRefresh\newMedia"
+$WORKING_PATH    = ".\mediaRefresh\temp"
+$MAIN_OS_MOUNT   = ".\mediaRefresh\temp\MainOSMount"
+$WINRE_MOUNT     = ".\mediaRefresh\temp\WinREMount"
+$WINPE_MOUNT     = ".\mediaRefresh\temp\WinPEMount"
 
 # Mount the language pack ISO
 Write-Output "$(Get-TS): Mounting LP ISO"
