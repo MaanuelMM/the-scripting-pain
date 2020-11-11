@@ -74,7 +74,7 @@ Dismount-WindowsImage -Path $WINRE_MOUNT -Save -ErrorAction stop | Out-Null
 
 # Export
 Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\winre2.wim"
-Export-WindowsImage -SourceImagePath $WORKING_PATH"\winre.wim" -SourceIndex 1 -DestinationImagePath $WORKING_PATH"\winre2.wim" -ErrorAction stop | Out-Null
+Export-WindowsImage -CompressionType max -SourceImagePath $WORKING_PATH"\winre.wim" -SourceIndex 1 -DestinationImagePath $WORKING_PATH"\winre2.wim" -ErrorAction stop | Out-Null
 Move-Item -Path $WORKING_PATH"\winre2.wim" -Destination $WORKING_PATH"\winre.wim" -Force -ErrorAction stop | Out-Null
 
 #
@@ -107,7 +107,7 @@ Foreach ($IMAGE in $WINPE_IMAGES) {
 
     # Export WinPE
     Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\boot2.wim"
-    Export-WindowsImage -SourceImagePath $MEDIA_NEW_PATH"\sources\boot.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\boot2.wim" -ErrorAction stop | Out-Null
+    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_NEW_PATH"\sources\boot.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\boot2.wim" -ErrorAction stop | Out-Null
 
 }
 
@@ -149,7 +149,7 @@ Dismount-WindowsImage -Path $MAIN_OS_MOUNT -Save -ErrorAction stop | Out-Null
 
 # Export
 Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install2.wim"
-Export-WindowsImage -SourceImagePath $MEDIA_NEW_PATH"\sources\install.wim" -SourceIndex 1 -DestinationImagePath $WORKING_PATH"\install2.wim" -ErrorAction stop | Out-Null
+Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_NEW_PATH"\sources\install.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\install2.wim" -ErrorAction stop | Out-Null
 Move-Item -Path $WORKING_PATH"\install2.wim" -Destination $MEDIA_NEW_PATH"\sources\install.wim" -Force -ErrorAction stop | Out-Null
 
 #
