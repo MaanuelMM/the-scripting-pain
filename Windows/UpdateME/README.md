@@ -7,3 +7,9 @@
 
 ## Usage
 Just run `MEUpdate.CMD` as administrator and wait 'til your computer is up and running again (or not).
+
+## Acknowledgements and/or credits
+- To the **Win-Raid Forum** for introducing me to the world of (soft) modding, providing some useful [scripts and resources](https://www.win-raid.com/t596f39-Intel-Converged-Security-Management-Engine-Drivers-Firmware-and-Tools.html) to get me there.
+- To **Intel(R) and its vulnerabilities** (especially [Intel-SA-00086](https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-00086.html) and [Intel-SA-00088](https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-00088.html), which were the start of it all).
+- To **Lenovo**, which thanks to its neglected support in the consumer range (but not with its business range, curiously), made me find my own way to be protected.
+- To **William Engelmann** (alias [_Bioruebe_](https://github.com/Bioruebe)) and its marvelous **Universal Extractor 2** _([UniExtract2](https://github.com/Bioruebe/UniExtract2))_ tool avoiding to deal with _Inno Setup_ installers (quite annoying, honestly).
