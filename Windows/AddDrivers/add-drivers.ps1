@@ -19,7 +19,7 @@ $WIM_INDEX          = 1
 $MEDIA_OLD_PATH     = "E:"
 $MEDIA_NEW_PATH     = "F:"
 $WORKING_PATH       = ".\temp"
-$MEDIA_MOUNT        = ".\temp\MediaSetup"
+$MEDIA_SETUP        = ".\temp\MediaSetup"
 $WINOS_MOUNT        = ".\temp\WinOSMount"
 $WINRE_MOUNT        = ".\temp\WinREMount"
 $WINPE_MOUNT        = ".\temp\WinPEMount"
@@ -44,26 +44,26 @@ If ( -Not ($SCCM_WINOS -Or $SCCM_WINPE -Or $SCCM_WINRE ) ) {
 
 # Create folders for mounting images and storing temporary files
 New-Item -ItemType directory -Path $WORKING_PATH -ErrorAction stop | Out-Null
-New-Item -ItemType directory -Path $MEDIA_MOUNT -ErrorAction stop | Out-Null
+New-Item -ItemType directory -Path $MEDIA_SETUP -ErrorAction stop | Out-Null
 If ($SCCM_WINOS) { New-Item -ItemType directory -Path $WINOS_MOUNT -ErrorAction stop | Out-Null }
 If ($SCCM_WINPE) { New-Item -ItemType directory -Path $WINPE_MOUNT -ErrorAction stop | Out-Null }
 If ($SCCM_WINRE) { New-Item -ItemType directory -Path $WINRE_MOUNT -ErrorAction stop | Out-Null }
 
 # Copy Windows Media Setup from original media to temporary directory to work with
 Write-Output "$(Get-TS): Copying original media setup to temporary directory"
-Copy-Item -Path $MEDIA_OLD_PATH"\*" -Destination $MEDIA_MOUNT -Force -Recurse -ErrorAction stop | Out-Null
-# Get-ChildItem -Path $MEDIA_MOUNT -Recurse | Where-Object { -Not $_.PSIsContainer -And $_.IsReadOnly } | ForEach-Object { $_.IsReadOnly = $False }
+Copy-Item -Path $MEDIA_OLD_PATH"\*" -Destination $MEDIA_SETUP -Force -Recurse -ErrorAction stop | Out-Null
+# Get-ChildItem -Path $MEDIA_SETUP -Recurse | Where-Object { -Not $_.PSIsContainer -And $_.IsReadOnly } | ForEach-Object { $_.IsReadOnly = $False }
 
 #########
 # WinPE #
 #########
 If ($SCCM_WINPE) {
   Write-Output "$(Get-TS): Mounting Windows Preinstallation Environment (WinPE)"
-  $WINPE_IMAGES = Get-WindowsImage -ImagePath $MEDIA_MOUNT"\sources\boot.wim"
+  $WINPE_IMAGES = Get-WindowsImage -ImagePath $MEDIA_SETUP"\sources\boot.wim"
 
   Foreach ($IMAGE in $WINPE_IMAGES) {
     Write-Output "$(Get-TS): Mounting WinPE with Index: $($IMAGE.ImageIndex)"
-    Mount-WindowsImage -ImagePath $MEDIA_MOUNT"\sources\boot.wim" -Index $IMAGE.ImageIndex -Path $WINPE_MOUNT -CheckIntegrity -ErrorAction stop | Out-Null
+    Mount-WindowsImage -ImagePath $MEDIA_SETUP"\sources\boot.wim" -Index $IMAGE.ImageIndex -Path $WINPE_MOUNT -CheckIntegrity -ErrorAction stop | Out-Null
     
     Foreach ($DRIVER in $SCCM_WINPE_LIST) {
       Write-Output "$(Get-TS): Adding driver: $DRIVER"
@@ -73,10 +73,10 @@ If ($SCCM_WINPE) {
     Dismount-WindowsImage -Path $WINPE_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
 
     Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\boot2.wim"
-    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_MOUNT"\sources\boot.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\boot2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
+    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\boot.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\boot2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
   }
 
-  Move-Item -Path $WORKING_PATH"\boot2.wim" -Destination $MEDIA_MOUNT"\sources\boot.wim" -Force -ErrorAction stop | Out-Null
+  Move-Item -Path $WORKING_PATH"\boot2.wim" -Destination $MEDIA_SETUP"\sources\boot.wim" -Force -ErrorAction stop | Out-Null
 }
 
 #################
@@ -84,7 +84,7 @@ If ($SCCM_WINPE) {
 #################
 If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
   Write-Output "$(Get-TS): Mounting Windows Operating System (WinOS) with Index: $WIM_INDEX"
-  Mount-WindowsImage -ImagePath $MEDIA_MOUNT"\sources\install.wim" -Index $WIM_INDEX -Path $WINOS_MOUNT -ErrorAction stop | Out-Null
+  Mount-WindowsImage -ImagePath $MEDIA_SETUP"\sources\install.wim" -Index $WIM_INDEX -Path $WINOS_MOUNT -ErrorAction stop | Out-Null
 
   If ( $SCCM_WINRE ) {
     Copy-Item -Path $WINOS_MOUNT"\windows\system32\recovery\winre.wim" -Destination $WORKING_PATH"\winre.wim" -Force -ErrorAction stop | Out-Null
@@ -107,7 +107,7 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
 
   If ( $ENABLE_NETFX3 ) {
     Write-Output "$(Get-TS): Adding NetFx3~~~~"
-    Add-WindowsCapability -Name "NetFx3~~~~" -Path $WINOS_MOUNT -Source $MEDIA_MOUNT"\sources\sxs" -ErrorAction stop | Out-Null
+    Add-WindowsCapability -Name "NetFx3~~~~" -Path $WINOS_MOUNT -Source $MEDIA_SETUP"\sources\sxs" -ErrorAction stop | Out-Null
   }
 
   If ( $SCCM_WINOS ) {
@@ -119,28 +119,28 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
   
   Dismount-WindowsImage -Path $WINOS_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
 
-  Write-Output "$(Get-TS): Exporting image to $MEDIA_MOUNT\sources\install.esd"
-  Export-WindowsImage -CompressionType recovery -SourceImagePath $MEDIA_MOUNT"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $MEDIA_MOUNT"\sources\install.esd" -CheckIntegrity -ErrorAction stop | Out-Null
+  Write-Output "$(Get-TS): Exporting image to $MEDIA_SETUP\sources\install.esd"
+  Export-WindowsImage -CompressionType recovery -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $MEDIA_SETUP"\sources\install.esd" -CheckIntegrity -ErrorAction stop | Out-Null
   
-  If ( [int]((Get-File $MEDIA_MOUNT"\sources\install.esd").length) -gt 4GB ) {
+  If ( [int]((Get-File $MEDIA_SETUP"\sources\install.esd").length) -gt 4GB ) {
     Write-Output "$(Get-TS): Generated ESD file is bigger than 4GB, so splitted image is required"
 
-    Remove-Item -Path $MEDIA_MOUNT"\sources\install.esd" -Force -ErrorAction stop | Out-Null
+    Remove-Item -Path $MEDIA_SETUP"\sources\install.esd" -Force -ErrorAction stop | Out-Null
     
     Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install2.wim"
-    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_MOUNT"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $WORKING_PATH"\install2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
+    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $WORKING_PATH"\install2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
     
-    Write-Output "$(Get-TS): Splitting image to $MEDIA_MOUNT\sources\install.swm in 4GB chunks"
-    Split-WindowsImage -ImagePath $WORKING_PATH"\install2.wim" -SplitImagePath $MEDIA_MOUNT"\sources\install.swm" -FileSize 4096 -CheckIntegrity -ErrorAction stop | Out-Null
+    Write-Output "$(Get-TS): Splitting image to $MEDIA_SETUP\sources\install.swm in 4GB chunks"
+    Split-WindowsImage -ImagePath $WORKING_PATH"\install2.wim" -SplitImagePath $MEDIA_SETUP"\sources\install.swm" -FileSize 4096 -CheckIntegrity -ErrorAction stop | Out-Null
     
     Remove-Item -Path $WORKING_PATH"\install2.wim" -Force -ErrorAction stop | Out-Null
   }
 
-  Remove-Item -Path $MEDIA_MOUNT"\sources\install.wim" -Force -ErrorAction stop | Out-Null
+  Remove-Item -Path $MEDIA_SETUP"\sources\install.wim" -Force -ErrorAction stop | Out-Null
 }
 
 Write-Output "$(Get-TS): Copying modified media setup to new directory"
-Copy-Item -Path $MEDIA_MOUNT"\*" -Destination $MEDIA_NEW_PATH -Force -Recurse -ErrorAction stop | Out-Null
+Copy-Item -Path $MEDIA_SETUP"\*" -Destination $MEDIA_NEW_PATH -Force -Recurse -ErrorAction stop | Out-Null
 
 Write-Output "$(Get-TS): Cleaning-up temporary directory"
 Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction stop | Out-Null
