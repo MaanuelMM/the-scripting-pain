@@ -72,11 +72,11 @@ If ($SCCM_WINPE) {
 
     Dismount-WindowsImage -Path $WINPE_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
 
-    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\boot2.wim"
-    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\boot.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\boot2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
+    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\boot.wim"
+    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\boot.wim" -SourceIndex $IMAGE.ImageIndex -DestinationImagePath $WORKING_PATH"\boot.wim" -CheckIntegrity -ErrorAction stop | Out-Null
   }
 
-  Move-Item -Path $WORKING_PATH"\boot2.wim" -Destination $MEDIA_SETUP"\sources\boot.wim" -Force -ErrorAction stop | Out-Null
+  Move-Item -Path $WORKING_PATH"\boot.wim" -Destination $MEDIA_SETUP"\sources\boot.wim" -Force -ErrorAction stop | Out-Null
 }
 
 #################
@@ -87,10 +87,8 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
   Mount-WindowsImage -ImagePath $MEDIA_SETUP"\sources\install.wim" -Index $WIM_INDEX -Path $WINOS_MOUNT -ErrorAction stop | Out-Null
 
   If ( $SCCM_WINRE ) {
-    Copy-Item -Path $WINOS_MOUNT"\windows\system32\recovery\winre.wim" -Destination $WORKING_PATH"\winre.wim" -Force -ErrorAction stop | Out-Null
-
     Write-Output "$(Get-TS): Mounting Windows Recovery Environment (WinRE)"
-    Mount-WindowsImage -ImagePath $WORKING_PATH"\winre.wim" -Index 1 -Path $WINRE_MOUNT -CheckIntegrity -ErrorAction stop | Out-Null
+    Mount-WindowsImage -ImagePath $WINOS_MOUNT"\windows\system32\recovery\winre.wim" -Index 1 -Path $WINRE_MOUNT -CheckIntegrity -ErrorAction stop | Out-Null
 
     Foreach ($DRIVER in $SCCM_WINRE_LIST) {
       Write-Output "$(Get-TS): Adding driver: $DRIVER"
@@ -99,18 +97,18 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
 
     Dismount-WindowsImage -Path $WINRE_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
 
-    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\winre2.wim"
-    Export-WindowsImage -CompressionType max -SourceImagePath $WORKING_PATH"\winre.wim" -SourceIndex 1 -DestinationImagePath $WORKING_PATH"\winre2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
+    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\winre.wim"
+    Export-WindowsImage -CompressionType max -SourceImagePath $WINOS_MOUNT"\windows\system32\recovery\winre.wim" -SourceIndex 1 -DestinationImagePath $WORKING_PATH"\winre.wim" -CheckIntegrity -ErrorAction stop | Out-Null
 
-    Move-Item -Path $WORKING_PATH"\winre2.wim" -Destination $WINOS_MOUNT"\windows\system32\recovery\winre.wim" -Force -ErrorAction stop | Out-Null
-  }
-
-  If ( $ENABLE_NETFX3 ) {
-    Write-Output "$(Get-TS): Adding NetFx3~~~~"
-    Add-WindowsCapability -Name "NetFx3~~~~" -Path $WINOS_MOUNT -Source $MEDIA_SETUP"\sources\sxs" -ErrorAction stop | Out-Null
+    Move-Item -Path $WORKING_PATH"\winre.wim" -Destination $WINOS_MOUNT"\windows\system32\recovery\winre.wim" -Force -ErrorAction stop | Out-Null
   }
 
   If ( $SCCM_WINOS ) {
+    If ( $ENABLE_NETFX3 ) {
+      Write-Output "$(Get-TS): Adding NetFx3~~~~"
+      Add-WindowsCapability -Name "NetFx3~~~~" -Path $WINOS_MOUNT -Source $MEDIA_SETUP"\sources\sxs" -ErrorAction stop | Out-Null
+    }
+
     Foreach ($DRIVER in $SCCM_WINOS_LIST) {
       Write-Output "$(Get-TS): Adding driver: $DRIVER"
       Add-WindowsDriver -Path $WINOS_MOUNT -Driver $SCCM_BASE_PATH$DRIVER -ErrorAction stop | Out-Null
@@ -127,13 +125,13 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
 
     Remove-Item -Path $MEDIA_SETUP"\sources\install.esd" -Force -ErrorAction stop | Out-Null
     
-    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install2.wim"
-    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $WORKING_PATH"\install2.wim" -CheckIntegrity -ErrorAction stop | Out-Null
+    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install.wim"
+    Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $WORKING_PATH"\install.wim" -CheckIntegrity -ErrorAction stop | Out-Null
     
     Write-Output "$(Get-TS): Splitting image to $MEDIA_SETUP\sources\install.swm in 4GB chunks"
-    Split-WindowsImage -ImagePath $WORKING_PATH"\install2.wim" -SplitImagePath $MEDIA_SETUP"\sources\install.swm" -FileSize 4096 -CheckIntegrity -ErrorAction stop | Out-Null
+    Split-WindowsImage -ImagePath $WORKING_PATH"\install.wim" -SplitImagePath $MEDIA_SETUP"\sources\install.swm" -FileSize 4096 -CheckIntegrity -ErrorAction stop | Out-Null
     
-    Remove-Item -Path $WORKING_PATH"\install2.wim" -Force -ErrorAction stop | Out-Null
+    Remove-Item -Path $WORKING_PATH"\install.wim" -Force -ErrorAction stop | Out-Null
   }
 
   Remove-Item -Path $MEDIA_SETUP"\sources\install.wim" -Force -ErrorAction stop | Out-Null
