@@ -46,8 +46,8 @@ If ( -Not ($SCCM_WINOS -Or $SCCM_WINPE -Or $SCCM_WINRE ) ) {
 New-Item -ItemType directory -Path $WORKING_PATH -ErrorAction stop | Out-Null
 New-Item -ItemType directory -Path $MEDIA_MOUNT -ErrorAction stop | Out-Null
 If ($SCCM_WINOS) { New-Item -ItemType directory -Path $WINOS_MOUNT -ErrorAction stop | Out-Null }
-If ($SCCM_WINPE) { New-Item -ItemType directory -Path $WINRE_MOUNT -ErrorAction stop | Out-Null }
-If ($SCCM_WINRE) { New-Item -ItemType directory -Path $WINPE_MOUNT -ErrorAction stop | Out-Null }
+If ($SCCM_WINPE) { New-Item -ItemType directory -Path $WINPE_MOUNT -ErrorAction stop | Out-Null }
+If ($SCCM_WINRE) { New-Item -ItemType directory -Path $WINRE_MOUNT -ErrorAction stop | Out-Null }
 
 # Copy Windows Media Setup from original media to temporary directory to work with
 Write-Output "$(Get-TS): Copying original media setup to temporary directory"
