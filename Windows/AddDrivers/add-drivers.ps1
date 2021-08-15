@@ -117,7 +117,7 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
   
   Dismount-WindowsImage -Path $WINOS_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
 
-  Write-Output "$(Get-TS): Exporting image to $MEDIA_SETUP\sources\install.esd"
+  Write-Output "$(Get-TS): Exporting image to $MEDIA_SETUP\sources\install.esd with recovery compression"
   Export-WindowsImage -CompressionType recovery -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $MEDIA_SETUP"\sources\install.esd" -CheckIntegrity -ErrorAction stop | Out-Null
   
   If ( [int]((Get-File $MEDIA_SETUP"\sources\install.esd").length) -gt 4GB ) {
@@ -125,7 +125,7 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
 
     Remove-Item -Path $MEDIA_SETUP"\sources\install.esd" -Force -ErrorAction stop | Out-Null
     
-    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install.wim"
+    Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install.wim with maximum compression"
     Export-WindowsImage -CompressionType max -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $WORKING_PATH"\install.wim" -CheckIntegrity -ErrorAction stop | Out-Null
     
     Write-Output "$(Get-TS): Splitting image to $MEDIA_SETUP\sources\install.swm in 4GB chunks"
