@@ -34,7 +34,7 @@ $SCCM_WINOS_LIST    = @('Lenovo_ACPI\AcpiVpc.inf', 'Intel_GPIO2\iaLPSS2_GPIO2_SK
 $SCCM_WINPE         = $False
 $SCCM_WINPE_LIST    = @()
 $SCCM_WINRE         = $False
-$SCCM_WINPE_LIST    = @()
+$SCCM_WINRE_LIST    = @()
 
 # Check if at least one SCCM is flagged as True
 If ( -Not ($SCCM_WINOS -Or $SCCM_WINPE -Or $SCCM_WINRE ) ) {
