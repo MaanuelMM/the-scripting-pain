@@ -121,7 +121,7 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
   # Export-WindowsImage -CompressionType recovery -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $MEDIA_SETUP"\sources\install.esd" -CheckIntegrity -ErrorAction stop | Out-Null
   DISM.exe /Export-Image /SourceImageFile:$MEDIA_SETUP"\sources\install.wim" /SourceIndex:$WIM_INDEX /DestinationImageFile:$MEDIA_SETUP"\sources\install.esd" /Compress:recovery /CheckIntegrity | Out-Null
 
-  If ( (Get-File $MEDIA_SETUP"\sources\install.esd").length -gt 4GB ) {
+  If ( (Get-Item $MEDIA_SETUP"\sources\install.esd").length -gt 4GB ) {
     Write-Output "$(Get-TS): Generated ESD file is bigger than 4GB, so splitted image is required"
 
     Remove-Item -Path $MEDIA_SETUP"\sources\install.esd" -Force -ErrorAction stop | Out-Null
