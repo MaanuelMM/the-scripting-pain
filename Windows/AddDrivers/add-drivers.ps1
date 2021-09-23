@@ -30,7 +30,7 @@ $ENABLE_NETFX3      = $True
 # Declare drivers list and images to be pre-installed
 $SCCM_BASE_PATH     = ".\Drivers\"
 $SCCM_WINOS         = $True
-$SCCM_WINOS_LIST    = @('Lenovo_ACPI\AcpiVpc.inf', 'Intel_GPIO2\iaLPSS2_GPIO2_SKL.inf', 'Intel_ME\HECI_REL\win10\heci.inf', 'Intel_ME\DAL_DCH_REL\DAL.inf', 'Intel_ME\ICLS_DCH\iclsClient.inf', 'Intel_Chipset\KabylakeSystem.inf', 'Intel_Chipset\SkylakeSystem.inf', 'Intel_Chipset\SunrisePoint-HSystem.inf', 'Intel_Chipset\SunrisePoint-HSystemThermal.inf', 'Intel_RST\AHCI\iaAHCIC.inf', 'Samsung_NVMe\secnvme.inf', 'Realtek_Audio\HDXLVE.inf', 'Realtek_PCIe_GbE\rt640x64.inf', 'Realtek_USB_GbE\rtux64w10sta.inf', 'Intel_WiFi\Netwtw08.inf', 'Intel_Bluetooth\ibtusb.inf', 'Intel_VGA\iigd_dch.inf', 'Nvidia_VGA\nvlti.inf', 'Synaptics_Touchpad\SynPD.inf', 'BayHubTech_SDCardReader\bhtpcrdr.inf', 'Realtek_EasyCamera\RtLeShA.inf')
+$SCCM_WINOS_LIST    = @('Lenovo_ACPI\AcpiVpc.inf', 'Intel_GPIO2\iaLPSS2_GPIO2_SKL.inf', 'Intel_ME\HECI_REL\win10\heci.inf', 'Intel_ME\DAL_DCH_REL\DAL.inf', 'Intel_ME\ICLS_DCH\iclsClient.inf', 'Intel_Chipset\Kabylake\KabylakeSystem.inf', 'Intel_Chipset\Skylake\SkylakeSystem.inf', 'Intel_Chipset\SunrisePoint-H\SunrisePoint-HSystem.inf', 'Intel_Chipset\SunrisePoint-H\SunrisePoint-HSystemThermal.inf', 'Intel_RST\AHCI\iaAHCIC.inf', 'Samsung_NVMe\secnvme.inf', 'Realtek_Audio\HDXLVE.inf', 'Realtek_PCIe_GbE\rt640x64.inf', 'Realtek_USB_GbE\mp\rtump64x64sta.inf', 'Realtek_USB_GbE\ExtInf\rtux64burst_ext.inf', 'Intel_WiFi\Netwtw08.inf', 'Intel_Bluetooth\ibtusb.inf', 'Intel_VGA\iigd_dch.inf', 'Nvidia_VGA\nvlti.inf', 'Synaptics_Touchpad\SynPD.inf', 'BayHubTech_SDCardReader\bhtpcrdr.inf', 'Realtek_EasyCamera\RtLeShA.inf')
 $SCCM_WINPE         = $False
 $SCCM_WINPE_LIST    = @()
 $SCCM_WINRE         = $False
@@ -52,7 +52,7 @@ If ($SCCM_WINRE) { New-Item -ItemType directory -Path $WINRE_MOUNT -ErrorAction 
 # Copy Windows Media Setup from original media to temporary directory to work with
 Write-Output "$(Get-TS): Copying original media setup to temporary directory"
 Copy-Item -Path $MEDIA_OLD_PATH"\*" -Destination $MEDIA_SETUP -Force -Recurse -ErrorAction stop | Out-Null
-# Get-ChildItem -Path $MEDIA_SETUP -Recurse | Where-Object { -Not $_.PSIsContainer -And $_.IsReadOnly } | ForEach-Object { $_.IsReadOnly = $False }
+Get-ChildItem -Path $MEDIA_SETUP -Recurse | Where-Object { -Not $_.PSIsContainer -And $_.IsReadOnly } | ForEach-Object { $_.IsReadOnly = $False }
 
 #########
 # WinPE #
@@ -105,7 +105,7 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
 
   If ( $SCCM_WINOS ) {
     If ( $ENABLE_NETFX3 ) {
-      Write-Output "$(Get-TS): Adding NetFx3~~~~"
+      Write-Output "$(Get-TS): Adding feature: NetFx3~~~~"
       Add-WindowsCapability -Name "NetFx3~~~~" -Path $WINOS_MOUNT -Source $MEDIA_SETUP"\sources\sxs" -ErrorAction stop | Out-Null
     }
 
@@ -118,9 +118,10 @@ If ( $SCCM_WINOS -Or $SCCM_WINRE ) {
   Dismount-WindowsImage -Path $WINOS_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
 
   Write-Output "$(Get-TS): Exporting image to $MEDIA_SETUP\sources\install.esd with recovery compression"
-  Export-WindowsImage -CompressionType recovery -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $MEDIA_SETUP"\sources\install.esd" -CheckIntegrity -ErrorAction stop | Out-Null
-  
-  If ( [int]((Get-File $MEDIA_SETUP"\sources\install.esd").length) -gt 4GB ) {
+  # Export-WindowsImage -CompressionType recovery -SourceImagePath $MEDIA_SETUP"\sources\install.wim" -SourceIndex $WIM_INDEX -DestinationImagePath $MEDIA_SETUP"\sources\install.esd" -CheckIntegrity -ErrorAction stop | Out-Null
+  DISM.exe /Export-Image /SourceImageFile:$MEDIA_SETUP"\sources\install.wim" /SourceIndex:$WIM_INDEX /DestinationImageFile:$MEDIA_SETUP"\sources\install.esd" /Compress:recovery /CheckIntegrity | Out-Null
+
+  If ( (Get-File $MEDIA_SETUP"\sources\install.esd").length -gt 4GB ) {
     Write-Output "$(Get-TS): Generated ESD file is bigger than 4GB, so splitted image is required"
 
     Remove-Item -Path $MEDIA_SETUP"\sources\install.esd" -Force -ErrorAction stop | Out-Null
