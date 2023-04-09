@@ -1,0 +1,10 @@
+{
+    "name": "E046963F.LenovoCompanion_k1h2ywk1493x8!App",
+    "license": "5763b01bc4814161a78990406d1b7d53_License1.xml",
+    "appx": "5763b01bc4814161a78990406d1b7d53.msixbundle",
+    "dependencies": [
+        "Microsoft.NET.Native.Framework.2.2_2.2.29512.0_x64__8wekyb3d8bbwe.appx",
+        "Microsoft.NET.Native.Runtime.2.2_2.2.28604.0_x64__8wekyb3d8bbwe.appx",
+        "Microsoft.VCLibs.140.00_14.0.30704.0_x64__8wekyb3d8bbwe.appx"
+    ]
+}
