@@ -1,3 +1,24 @@
+# Universal Windows Platform (UWP) Apps offline deployment (licenses and self-signed certificates)
+
+Continuing with my (abandoned) adventure of preparing a customized offline Windows image for an unattended deployment with everything required to have a system ready to use, here are the scripts and licenses needed for the installation of the system utilities based on Metro Apps. Particularly, it will be the utilities used on every Lenovo device in addiction of a couple of utilities specific to my hardware, which are:
+
+- **Intel® Graphics Command Center** _(AppUp.IntelGraphicsExperience_8j3eq9eme6ctt)_: license extracted from HP recovery media issued on 2022-03-18T23:09:22.4248996Z.
+
+- ~~**Intel(R) Management and Security Status** _(AppUp.IntelManagementandSecurityStatus_8j3eq9eme6ctt)_: license extracted from HP recovery media issued on 2022-02-09T07:39:32.2717508Z.~~
+
+- ~~**Intel® Optane™ Memory and Storage Management** _(AppUp.IntelOptaneMemoryandStorageManagement_8j3eq9eme6ctt)_: unable to find offline license.~~
+
+- **Lenovo Vantage** _(E046963F.LenovoCompanion_k1h2ywk1493x8)_: license extracted from Lenovo recovery media issued on 2019-08-22T16:38:04.1540033Z.
+
+- **Lenovo Hotkeys** _(E0469640.LenovoUtility_5grkq8ppsgwt4)_: license extracted from Lenovo recovery media issued on 2019-07-10T01:15:31.4582494Z.
+
+- **Lenovo Nerve Center** _(E0469640.NerveCenter_5grkq8ppsgwt4)_: license extracted from Lenovo recovery media issued on 2017-09-05T01:18:05.8773296Z.
+
+- **NVIDIA Control Panel** _(NVIDIACorp.NVIDIAControlPanel_56jybvy8sckqj)_: license extracted from HP recovery media issued on 2022-01-17T11:35:32.7606232Z.
+
+- **SynLenovoLBGDApp** _(SynapticsIncorporated.SynLenovoLBGDApp_807d65c4rvak2)_: bundled and self-signed APPX (script to extract CERT from APPX, add to Trusted People cert store and deploy it included).
+
+
 # Mission Impossible - Appx License
 
 Let's be brief (HA!). This folder is intened to actually deploy Appx (or AppxBundle) into a custom Windows offline image, however, an offline license is needed too.
