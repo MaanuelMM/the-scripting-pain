@@ -23,6 +23,3 @@ Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPeople -Certific
 
 # Provisioning MetroApp into online Windows image (skipping license)
 Add-ProvisionedAppPackage -Online -PackagePath $AppxPath -SkipLicense -Regions all -ErrorAction Stop | Out-Null
-
-# Clean-up temporal directory
-Remove-Item -Path $TempPath -Recurse -Force -ErrorAction Stop | Out-Null
