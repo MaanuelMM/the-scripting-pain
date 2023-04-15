@@ -15,15 +15,11 @@ $SynTPVer = "v19005.10153.0.0"
 $AppxPath = ".\Install\SynLenovoLBGDApp_${SynTPVer}_x64.appx"
 
 # Extracting and exporting signer certificate from $AppxPath into $Cert variable
+# Note that a file can have several signatures and this solution is intended for files with only one signature
 $Cert = (Get-AuthenticodeSignature $AppxPath -ErrorAction Stop).SignerCertificate
 
-# Creating new CertStore object to open TrustedPeople certificate store in the LocalMachine location
-$CertStore = New-Object System.Security.Cryptography.X509Certificates.X509Store("TrustedPeople", "LocalMachine") -ErrorAction stop
-
-# Opening with R/W permissions, adding certificate into \LocalMachine\TrustedPeople Cert Store and closing the object
-$CertStore.Open("ReadWrite")
-$CertStore.Add($Cert)
-$CertStore.Close()
+# Importing certificate into \LocalMachine\TrustedPeople Cert Store
+Import-Certificate -CertStoreLocation Cert:\LocalMachine\TrustedPeople -Certificate $Cert -ErrorAction Stop | Out-Null
 
 # Provisioning MetroApp into online Windows image (skipping license)
 Add-ProvisionedAppPackage -Online -PackagePath $AppxPath -SkipLicense -Regions all -ErrorAction Stop | Out-Null
