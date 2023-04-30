@@ -116,7 +116,7 @@ $APPX_WINOS_LIST    = @(
 )
 
 # Optimize HSA and MSStore apps replacing identical files with hardlinks
-$OPTIMIZE_APPX      = $False
+$OPTIMIZE_APPX      = $True
 
 
 # Check if at least one option is flagged as True
