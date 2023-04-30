@@ -93,6 +93,7 @@ $SCCM_WINOS_LIST    = @(
   'Realtek_Audio\Forte\FMAPO\FMAPO.inf',
   'Realtek_WLAN\netrtwlane.inf',
   'Realtek_Bluetooth\Rtkfilter.inf',
+  'Realtek_USB_GbE\rtu53cx22x64sta.inf',
   'BayHubTech_SDCardReader\bhtsddr.inf',
   'Azurewave_Camera\snDMFT.inf'
 )
