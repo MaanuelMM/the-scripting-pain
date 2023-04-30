@@ -115,6 +115,9 @@ $APPX_WINOS_LIST    = @(
   'LenovoUtility\manifest.json'
 )
 
+# Optimize HSA and MSStore apps replacing identical files with hardlinks
+$OPTIMIZE_APPX      = $False
+
 
 # Check if at least one option is flagged as True
 If ( -Not ( $ENABLE_NETFX3 -Or $SCCM_WINOS -Or $SCCM_WINPE -Or $SCCM_WINRE -Or $HSA_WINOS -Or $APPX_WINOS ) ) {
@@ -200,8 +203,10 @@ If ( $ENABLE_NETFX3 -Or $SCCM_WINRE -Or $SCCM_WINOS -Or $HSA_WINOS -Or $APPX_WIN
     If ( $HSA_WINOS ) { Install-ProvisionedPackages $WINOS_MOUNT 'HSA' $HSA_WINOS_LIST $HSA_BASE_PATH }
     If ( $APPX_WINOS ) { Install-ProvisionedPackages $WINOS_MOUNT 'MSStore' $APPX_WINOS_LIST $APPX_BASE_PATH }
 
+    If ( $OPTIMIZE_APPX ) {
     Write-Output "$(Get-TS): Optimizing provisioned Appx packages"
     Optimize-AppXProvisionedPackages -Path $WINOS_MOUNT -ErrorAction stop | Out-Null
+    }
   }
   
   Dismount-WindowsImage -Path $WINOS_MOUNT -Save -CheckIntegrity -ErrorAction stop | Out-Null
@@ -220,6 +225,7 @@ If ( $ENABLE_NETFX3 -Or $SCCM_WINRE -Or $SCCM_WINOS -Or $HSA_WINOS -Or $APPX_WIN
     } Else {
       Remove-Item -Path $MEDIA_SETUP"\sources\install.wim" -Force -ErrorAction stop | Out-Null
     }
+  }
   
   If ( -Not $WINOS_ESD ) {
     Write-Output "$(Get-TS): Exporting image to $WORKING_PATH\install.wim with maximum compression"
