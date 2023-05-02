@@ -20,7 +20,7 @@ function Invoke-Oscdimg([string]$OscdimgPath, [string]$Architecture, [string]$So
     $boot_bios = '#p0,e,b"' + $etfsboot + '"'
     $boot_uefi = '#pEF,e,b"' + $efisys + '"'
     
-    if ($Architecture -eq "ARM64") { $command += '1' + $boot_uefi
+    if ($Architecture -eq "ARM64") { $command += '1' + $boot_uefi }
     else { $command += '2' + $boot_bios + $boot_uefi }
 
     $command += ' -o -h -m -u2 -udfver102 -lESD-ISO "' + $SourceRoot + '" "' + $TargetFile + '"'
