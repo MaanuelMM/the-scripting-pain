@@ -17,7 +17,7 @@ function Invoke-Oscdimg([string]$OscdimgPath, [string]$Architecture, [string]$So
     if ($Architecture -eq "ARM64") { $command += '1#pEF,e,b"' + $SourceRoot + '\efi\Microsoft\boot\efisys.bin"' }
     else { $command += '2#p0,e,b"' + $SourceRoot + '\boot\etfsboot.com"#pEF,e,b"' + $SourceRoot + '\efi\Microsoft\boot\efisys.bin"' }
 
-    $command += ' -o -h -m -u2 -udfver102 ' + $SourceRoot + ' ' + $TargetFile
+    $command += ' -o -h -m -u2 -udfver102 -lESD-ISO ' + $SourceRoot + ' ' + $TargetFile
 
     Invoke-Expression "cmd.exe /c $command"
 }
@@ -99,12 +99,13 @@ if (Test-Path $OSCDIMG_PATH) {
                 }
                 else {
                     Write-Output "$(Get-TS): Exporting $($image.ImageName) into $($install_esd)"
-                    Dism.exe /Export-Image /SourceImageFile:$file_path /SourceIndex:$image.ImageIndex /DestinationImageFile:$install_esd /Compress:recovery /CheckIntegrity | Out-Null
+                    $dism_export = 'Dism.exe /Export-Image /SourceImageFile:"' + $file_path + '" /SourceIndex:' + $image.ImageIndex + ' /DestinationImageFile:"' + $install_esd + '" /Compress:recovery /CheckIntegrity'
+                    Invoke-Expression "cmd /c $dism_export" | Out-Null
                 }
             }
             
             Write-Output "$(Get-TS): Generating ISO file"
-            $iso_name = (Get-Item $file_path).BaseName + ".ISO"
+            $iso_name = (Get-Item $file_path).BaseName + ".iso"
             Invoke-Oscdimg -OscdimgPath $OSCDIMG_PATH -Architecture $ARCHITECTURE -SourceRoot $setup_media -TargetFile $iso_name
             
             Write-Output "$(Get-TS): ISO file generated correctly. Cleaning-up and exiting..."
