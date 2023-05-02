@@ -61,7 +61,8 @@ if (Test-Path $OSCDIMG_PATH) {
 
     Write-Output "$(Get-TS): Expanding products.cab into products.xml"
     $products_xml_path = Join-Path $WORKING_PATH "products.xml"
-    expand.exe $products_cab_path -F:products.xml $products_xml_path | Out-Null
+    $expand_command = 'expand.exe "' + $products_cab_path + '" -F:products.xml "' + $products_xml_path + '"'
+    Invoke-Expression "cmd.exe /c $expand_command" | Out-Null
 
     [xml]$xml = Get-Content $products_xml_path
 
