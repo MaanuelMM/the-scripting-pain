@@ -31,21 +31,22 @@ function Invoke-Oscdimg([string]$OscdimgPath, [string]$Architecture, [string]$So
 
 Write-Output "$(Get-TS): Starting ESD to ISO creation tool"
 
-$WORKING_PATH   = ".\temp"
+$WORKING_PATH       = ".\temp"
 
-$ADK_PATH       = "C:\Program Files (x86)\Windows Kits\10"
-$HOST_ARCH      = $env:PROCESSOR_ARCHITECTURE.ToLower()
-$OSCDIMG_PATH   = Join-Path $ADK_PATH -ChildPath "\Assessment and Deployment Kit\Deployment Tools\" | Join-Path -ChildPath $HOST_ARCH | Join-Path -ChildPath "\Oscdimg\oscdimg.exe"
+$PROGRAM_FILES_PATH = if (${Env:ProgramFiles(x86)}) { ${Env:ProgramFiles(x86)} } else { ${Env:ProgramFiles} }
+$ADK_PATH           = Join-Path $PROGRAM_FILES_PATH "\Windows Kits\10"
+$HOST_ARCH          = $env:PROCESSOR_ARCHITECTURE.ToLower()
+$OSCDIMG_PATH       = Join-Path $ADK_PATH -ChildPath "\Assessment and Deployment Kit\Deployment Tools\" | Join-Path -ChildPath $HOST_ARCH | Join-Path -ChildPath "\Oscdimg\oscdimg.exe"
 
-$LANG_CODE      = "es-es"
-$EDITION        = "Professional"
-$ARCHITECTURE   = "ARM64"
+$LANG_CODE          = "es-es"
+$EDITION            = "Professional"
+$ARCHITECTURE       = "ARM64"
 
-# Windows 10   -> 0
-# Windows 11   -> 1
-$PRODUCT        = 1
+# Windows 10       -> 0
+# Windows 11       -> 1
+$PRODUCT            = 1
 
-$PRODUCTS_LIST  = @(
+$PRODUCTS_LIST      = @(
     "https://go.microsoft.com/fwlink/?LinkId=841361",
     "https://go.microsoft.com/fwlink/?LinkId=2156292"
 )
