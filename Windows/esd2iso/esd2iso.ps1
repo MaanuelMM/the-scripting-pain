@@ -13,13 +13,20 @@ function Invoke-SilentWebRequest([string]$Uri, [string]$OutFile) {
 
 function Invoke-Oscdimg([string]$OscdimgPath, [string]$Architecture, [string]$SourceRoot, [string]$TargetFile) {
     $command = '"' + $OscdimgPath + '" -bootdata:'
-    
-    if ($Architecture -eq "ARM64") { $command += '1#pEF,e,b"' + $SourceRoot + '\efi\Microsoft\boot\efisys.bin"' }
-    else { $command += '2#p0,e,b"' + $SourceRoot + '\boot\etfsboot.com"#pEF,e,b"' + $SourceRoot + '\efi\Microsoft\boot\efisys.bin"' }
 
-    $command += ' -o -h -m -u2 -udfver102 -lESD-ISO ' + $SourceRoot + ' ' + $TargetFile
+    $etfsboot = Join-Path $SourceRoot "\boot\etfsboot.com"
+    $efisys = Join-Path $SourceRoot "\efi\Microsoft\boot\efisys.bin"
+
+    $boot_bios = '#p0,e,b"' + $etfsboot + '"'
+    $boot_uefi = '#pEF,e,b"' + $efisys + '"'
+    
+    if ($Architecture -eq "ARM64") { $command += '1' + $boot_uefi
+    else { $command += '2' + $boot_bios + $boot_uefi }
+
+    $command += ' -o -h -m -u2 -udfver102 -lESD-ISO "' + $SourceRoot + '" "' + $TargetFile + '"'
 
     Invoke-Expression "cmd.exe /c $command"
+    Write-Host
 }
 
 Write-Output "$(Get-TS): Starting ESD to ISO creation tool"
