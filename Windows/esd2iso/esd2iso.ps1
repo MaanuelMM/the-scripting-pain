@@ -7,7 +7,7 @@ function Get-TS { return "{0:HH:mm:ss}" -f [DateTime]::Now }
 
 function Invoke-SilentWebRequest([string]$Uri, [string]$OutFile) {
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -Uri $Uri -OutFile $OutFile
+    Invoke-WebRequest -Uri $Uri -OutFile $OutFile -ErrorAction Stop | Out-Null
     $ProgressPreference = 'Continue'
 }
 
@@ -19,13 +19,13 @@ function Invoke-Oscdimg([string]$OscdimgPath, [string]$Architecture, [string]$So
 
     $boot_bios = '#p0,e,b"' + $etfsboot + '"'
     $boot_uefi = '#pEF,e,b"' + $efisys + '"'
-    
+
     if ($Architecture -eq "ARM64") { $command += '1' + $boot_uefi }
     else { $command += '2' + $boot_bios + $boot_uefi }
 
     $command += ' -o -h -m -u2 -udfver102 -lESD-ISO "' + $SourceRoot + '" "' + $TargetFile + '"'
 
-    Invoke-Expression "cmd.exe /c $command"
+    Invoke-Expression "cmd.exe /c $command" -ErrorAction Stop
     Write-Host
 }
 
@@ -35,7 +35,7 @@ $WORKING_PATH       = ".\temp"
 
 $PROGRAM_FILES_PATH = if (${Env:ProgramFiles(x86)}) { ${Env:ProgramFiles(x86)} } else { ${Env:ProgramFiles} }
 $ADK_PATH           = Join-Path $PROGRAM_FILES_PATH "\Windows Kits\10"
-$HOST_ARCH          = $env:PROCESSOR_ARCHITECTURE.ToLower()
+$HOST_ARCH          = $Env:PROCESSOR_ARCHITECTURE.ToLower()
 $OSCDIMG_PATH       = Join-Path $ADK_PATH -ChildPath "\Assessment and Deployment Kit\Deployment Tools\" | Join-Path -ChildPath $HOST_ARCH | Join-Path -ChildPath "\Oscdimg\oscdimg.exe"
 
 $LANG_CODE          = "es-es"
@@ -52,7 +52,7 @@ $PRODUCTS_LIST      = @(
 )
 
 if (Test-Path $OSCDIMG_PATH) {
-    
+
     if (Test-Path $WORKING_PATH) { Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction Stop | Out-Null }
     New-Item -ItemType directory -Path $WORKING_PATH -ErrorAction stop | Out-Null
 
@@ -72,62 +72,72 @@ if (Test-Path $OSCDIMG_PATH) {
     } | Select-Object -First 1  # the selection of the first occurrence should not be necessary because there should only be one occurrence, but who knows
 
     if ($file) {
-        
         Write-Output "$(Get-TS): Match found for language `"$($LANG_CODE)`", edition `"$($EDITION)`" and architecture `"$($ARCHITECTURE)`""
 
-        $filename = Split-Path $file.FilePath -Leaf
+        $filename = $file.FileName
         $file_path = Join-Path $WORKING_PATH $filename
 
         Write-Output "$(Get-TS): Downloading $($filename)"
         Invoke-SilentWebRequest -Uri $file.FilePath -OutFile $file_path
-        
-        Write-Output "$(Get-TS): Comparing SHA1 hash from downloaded ESD file with products.xml"
-        $filehash_xml = $file.Sha1
-        $filehash_esd = (Get-FileHash -Path $file_path -Algorithm SHA1).Hash
-        
-        if ($filehash_xml.ToLower() -eq $filehash_esd.ToLower()) {
-            
-            Write-Output "$(Get-TS): SHA1 hash from downloaded ESD file matches with products.xml"
 
-            $setup_media = Join-Path $WORKING_PATH "\ISOFOLDER"
-            New-Item -ItemType directory -Path $setup_media -ErrorAction stop | Out-Null
+        Write-Output "$(Get-TS): Comparing the size of the downloaded ESD file against products.xml"
+        $filesize_xml = [int64]$file.Size
+        $filesize_esd = (Get-Item -Path $file_path).Length
 
-            $boot_wim = Join-Path $setup_media "\sources\boot.wim"
-            $install_esd = Join-Path $setup_media "\sources\install.esd"
-            
-            $images = Get-WindowsImage -ImagePath $file_path
-            
-            foreach ( $image in $images ) {
-                if ( $image.ImageIndex -eq 1 ) {
-                    Write-Output "$(Get-TS): Expanding $($image.ImageName) into $($setup_media)"
-                    Expand-WindowsImage -ImagePath $file_path -Index $image.ImageIndex -ApplyPath $setup_media -CheckIntegrity -ErrorAction Stop | Out-Null
+        if ($filesize_xml -eq $filesize_esd) {
+            Write-Output "$(Get-TS): Downloaded ESD file size matches with products.xml"
+            Write-Output "$(Get-TS): Comparing the SHA1 hash of the downloaded ESD file against products.xml"
+            $filehash_xml = $file.Sha1
+            $filehash_esd = (Get-FileHash -Path $file_path -Algorithm SHA1).Hash
+
+            if ($filehash_xml.ToLower() -eq $filehash_esd.ToLower()) {
+                Write-Output "$(Get-TS): Downloaded ESD file SHA1 hash matches with products.xml"
+
+                $setup_media = Join-Path $WORKING_PATH "\ISOFOLDER"
+                New-Item -ItemType directory -Path $setup_media -ErrorAction stop | Out-Null
+
+                $boot_wim = Join-Path $setup_media "\sources\boot.wim"
+                $install_esd = Join-Path $setup_media "\sources\install.esd"
+
+                $images = Get-WindowsImage -ImagePath $file_path
+
+                foreach ( $image in $images ) {
+                    if ( $image.ImageIndex -eq 1 ) {
+                        Write-Output "$(Get-TS): Expanding $($image.ImageName) into $($setup_media)"
+                        Expand-WindowsImage -ImagePath $file_path -Index $image.ImageIndex -ApplyPath $setup_media -CheckIntegrity -ErrorAction Stop | Out-Null
+                    }
+                    elseif ( $image.ImageIndex -eq 2 -or $image.ImageIndex -eq 3 ) {
+                        Write-Output "$(Get-TS): Exporting $($image.ImageName) into $($boot_wim)"
+                        Export-WindowsImage -SourceImagePath $file_path -SourceIndex $image.ImageIndex -DestinationImagePath $boot_wim -CompressionType max -CheckIntegrity -ErrorAction Stop | Out-Null
+                    }
+                    else {
+                        Write-Output "$(Get-TS): Exporting $($image.ImageName) into $($install_esd)"
+                        $dism_export = 'Dism.exe /Export-Image /SourceImageFile:"' + $file_path + '" /SourceIndex:' + $image.ImageIndex + ' /DestinationImageFile:"' + $install_esd + '" /Compress:recovery /CheckIntegrity'
+                        Invoke-Expression "cmd /c $dism_export" -ErrorAction Stop | Out-Null
+                    }
                 }
-                elseif ( $image.ImageIndex -eq 2 -or $image.ImageIndex -eq 3 ) {
-                    Write-Output "$(Get-TS): Exporting $($image.ImageName) into $($boot_wim)"
-                    Export-WindowsImage -SourceImagePath $file_path -SourceIndex $image.ImageIndex -DestinationImagePath $boot_wim -CompressionType max -CheckIntegrity -ErrorAction Stop | Out-Null
-                }
-                else {
-                    Write-Output "$(Get-TS): Exporting $($image.ImageName) into $($install_esd)"
-                    $dism_export = 'Dism.exe /Export-Image /SourceImageFile:"' + $file_path + '" /SourceIndex:' + $image.ImageIndex + ' /DestinationImageFile:"' + $install_esd + '" /Compress:recovery /CheckIntegrity'
-                    Invoke-Expression "cmd /c $dism_export" | Out-Null
-                }
+
+                Write-Output "$(Get-TS): Generating ISO file"
+                $iso_name = (Get-Item $file_path).BaseName + ".iso"
+                Invoke-Oscdimg -OscdimgPath $OSCDIMG_PATH -Architecture $ARCHITECTURE -SourceRoot $setup_media -TargetFile $iso_name
+
+                Write-Output "$(Get-TS): ISO file generated correctly. Cleaning-up and exiting..."
+                Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction Stop | Out-Null
+                Exit 0
             }
-            
-            Write-Output "$(Get-TS): Generating ISO file"
-            $iso_name = (Get-Item $file_path).BaseName + ".iso"
-            Invoke-Oscdimg -OscdimgPath $OSCDIMG_PATH -Architecture $ARCHITECTURE -SourceRoot $setup_media -TargetFile $iso_name
-            
-            Write-Output "$(Get-TS): ISO file generated correctly. Cleaning-up and exiting..."
-            Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction Stop | Out-Null
-            Exit 0
+
+            else {
+                Write-Output "$(Get-TS): Downloaded ESD file SHA1 hash ($($filehash_esd)) doesn't match with products.xml ($($filehash_xml)). Cleaning-up and exiting..."
+                Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction Stop | Out-Null
+                Exit 1
+            }
         }
 
         else {
-            Write-Output "$(Get-TS): SHA1 hash from downloaded ESD file does not match with products.xml. Cleaning-up and exiting..."
+            Write-Output "$(Get-TS): Downloaded ESD file size ($($filesize_esd) bytes) doesn't match with products.xml ($($filesize_xml) bytes). Cleaning-up and exiting..."
             Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction Stop | Out-Null
             Exit 1
         }
-
     }
 
     else {
@@ -135,7 +145,6 @@ if (Test-Path $OSCDIMG_PATH) {
         Remove-Item -Path $WORKING_PATH -Recurse -Force -ErrorAction Stop | Out-Null
         Exit 1
     }
-
 }
 
 else {
