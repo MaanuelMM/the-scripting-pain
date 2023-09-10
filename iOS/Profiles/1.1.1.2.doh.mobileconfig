@@ -25,7 +25,7 @@
                     <string>https://security.cloudflare-dns.com/dns-query</string>
                 </dict>
                 <key>PayloadDisplayName</key>
-                <string>Cloudflare DNS over HTTPS with Malware Protection</string>
+                <string>Cloudflare Public DNS over HTTPS with Malware Blocking</string>
                 <key>PayloadIdentifier</key>
                 <string>com.apple.dnsSettings.managed.91B7B647-F24F-4FCD-9817-C6E1D1EDCED5</string>
                 <key>PayloadType</key>
@@ -37,9 +37,9 @@
             </dict>
         </array>
         <key>PayloadDescription</key>
-        <string>Configures device to use Cloudflare DNS over HTTPS (DoH) with Malware Protection.</string>
+        <string>Configures device to use Cloudflare Public DNS over HTTPS (DoH) with Malware Blocking.</string>
         <key>PayloadDisplayName</key>
-        <string>Cloudflare DNS over HTTPS with Malware Protection</string>
+        <string>Cloudflare Public DNS over HTTPS with Malware Blocking</string>
         <key>PayloadIdentifier</key>
         <string>com.cloudflare.onedotonedotonedotone.5868FEF0-C8AE-4F09-ADD6-2842D2E5D1EA</string>
         <key>PayloadOrganization</key>
