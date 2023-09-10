@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>ConsentText</key>
+        <dict>
+            <key>default</key>
+            <string>Cloudflare's one.one.one.one is a free service that replaces your default ISP or
+                enterprise Domain Name Server (DNS) configuration. For additional information on
+                one.one.one.one see https://one.one.one.one</string>
+        </dict>
+        <key>PayloadContent</key>
+        <array>
+            <dict>
+                <key>DNSSettings</key>
+                <dict>
+                    <key>DNSProtocol</key>
+                    <string>HTTPS</string>
+                    <key>ServerAddresses</key>
+                    <array>
+                        <string>1.1.1.2</string>
+                        <string>1.0.0.2</string>
+                        <string>2606:4700:4700::1112</string>
+                        <string>2606:4700:4700::1002</string>
+                    </array>
+                    <key>ServerURL</key>
+                    <string>https://security.cloudflare-dns.com/dns-query</string>
+                </dict>
+                <key>PayloadDisplayName</key>
+                <string>Cloudflare Secured DNS over HTTPS with Malware Protection</string>
+                <key>PayloadIdentifier</key>
+                <string>com.apple.dnsSettings.managed.91B7B647-F24F-4FCD-9817-C6E1D1EDCED5</string>
+                <key>PayloadType</key>
+                <string>com.apple.dnsSettings.managed</string>
+                <key>PayloadUUID</key>
+                <string>DD412B41-B865-43F8-909E-BA259F301B53</string>
+                <key>PayloadVersion</key>
+                <integer>1</integer>
+            </dict>
+        </array>
+        <key>PayloadDescription</key>
+        <string>Configures device to use Cloudflare Secured DNS over HTTPS (DoH) with Malware
+            Protection. Secured DNS blocks malicious domains, validates DNSSEC, and encrypts using
+            DoH.</string>
+        <key>PayloadDisplayName</key>
+        <string>Cloudflare Secured DNS over HTTPS with Malware Protection</string>
+        <key>PayloadIdentifier</key>
+        <string>com.cloudflare.onedotonedotonedotone.5868FEF0-C8AE-4F09-ADD6-2842D2E5D1EA</string>
+        <key>PayloadOrganization</key>
+        <string>Cloudflare, Inc.</string>
+        <key>PayloadScope</key>
+        <string>User</string>
+        <key>PayloadType</key>
+        <string>Configuration</string>
+        <key>PayloadUUID</key>
+        <string>6DDBB790-B757-4A6E-A8CF-69CE8321B2B9</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>TargetDeviceType</key>
+        <integer>0</integer>
+    </dict>
+</plist>
