@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>ConsentText</key>
+        <dict>
+            <key>default</key>
+            <string>Cloudflare's one.one.one.one is a free service that replaces your default ISP or enterprise Domain Name Server (DNS) configuration. For additional information on one.one.one.one see https://one.one.one.one</string>
+        </dict>
+        <key>PayloadContent</key>
+        <array>
+            <dict>
+                <key>DNSSettings</key>
+                <dict>
+                    <key>DNSProtocol</key>
+                    <string>TLS</string>
+                    <key>ServerAddresses</key>
+                    <array>
+                        <string>1.1.1.2</string>
+                        <string>1.0.0.2</string>
+                        <string>2606:4700:4700::1112</string>
+                        <string>2606:4700:4700::1002</string>
+                    </array>
+                    <key>ServerName</key>
+                    <string>security.cloudflare-dns.com</string>
+                </dict>
+                <key>PayloadDisplayName</key>
+                <string>Cloudflare Public DNS over TLS with Malware Blocking</string>
+                <key>PayloadIdentifier</key>
+                <string>com.apple.dnsSettings.managed.59C9E4DE-8DA6-4A4B-B8FE-3ECB46CFFDC1</string>
+                <key>PayloadType</key>
+                <string>com.apple.dnsSettings.managed</string>
+                <key>PayloadUUID</key>
+                <string>9AF58420-A0E6-4A2B-A16A-570F60971BDD</string>
+                <key>PayloadVersion</key>
+                <integer>1</integer>
+            </dict>
+        </array>
+        <key>PayloadDescription</key>
+        <string>Configures device to use Cloudflare Public DNS over TLS (DoT) with Malware Blocking.</string>
+        <key>PayloadDisplayName</key>
+        <string>Cloudflare Public DNS over TLS with Malware Blocking</string>
+        <key>PayloadIdentifier</key>
+        <string>com.cloudflare.onedotonedotonedotone.46C70420-B663-4398-8407-1AC5E851E3E8</string>
+        <key>PayloadOrganization</key>
+        <string>Cloudflare, Inc.</string>
+        <key>PayloadScope</key>
+        <string>User</string>
+        <key>PayloadType</key>
+        <string>Configuration</string>
+        <key>PayloadUUID</key>
+        <string>5785D672-C2D3-453F-AD70-2666A1F09914</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+        <key>TargetDeviceType</key>
+        <integer>0</integer>
+    </dict>
+</plist>
