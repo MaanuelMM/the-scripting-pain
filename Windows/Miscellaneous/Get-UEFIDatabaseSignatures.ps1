@@ -2,7 +2,7 @@
 
 # From https://gist.github.com/out0xb2/f8e0bae94214889a89ac67fceb37f8c0?permalink_comment_id=4572467#gistcomment-4572467
 
-function Get-UefiDatabaseSignatures {
+function Get-UEFIDatabaseSignatures {
 <#
 .SYNOPSIS
 Parses UEFI Signature Databases into logical Powershell objects
