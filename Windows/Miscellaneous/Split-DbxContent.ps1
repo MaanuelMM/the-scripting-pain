@@ -1,15 +1,15 @@
 # Based on original script written by the "Microsoft Secure Boot Team" (https://www.powershellgallery.com/packages/SplitDbxContent/1.0)
 # Optimized by me based on "cjee21" script (https://github.com/cjee21/Check-UEFISecureBootVariables/blob/main/Get-UEFIDatabaseSignatures.ps1)
 
-function Split-DbxAuthInfo {
+function Split-DbxContent {
 
 <#
 .DESCRIPTION
  Splits a DBX update package into the new DBX variable contents and the signature authorizing the change.
  To apply an update using the output files of this script, try:
- Set-SecureBootUefi -Name dbx -ContentFilePath .\content.bin -SignedFilePath .\signature.p7 -Time 2010-03-06T19:17:21Z -AppendWrite'
+ Set-SecureBootUEFI -Name dbx -ContentFilePath .\content.bin -SignedFilePath .\signature.p7 -Time 2010-03-06T19:17:21Z -AppendWrite'
 .EXAMPLE
-Split-DbxAuthInfo DbxUpdate_x64.bin
+Split-DbxContent DbxUpdate_x64.bin
 #>
 
     # Get file from script input
