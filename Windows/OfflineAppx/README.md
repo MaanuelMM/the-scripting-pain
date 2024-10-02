@@ -14,6 +14,8 @@ Continuing with my (abandoned) adventure of preparing a customized offline Windo
 
 - **Lenovo Nerve Center** _(E0469640.NerveCenter_5grkq8ppsgwt4)_: license extracted from Lenovo recovery media issued on 2017-09-05T01:18:05.8773296Z.
 
+- **Microsoft HEVC Video Extensions** _(Microsoft.HEVCVideoExtensions_8wekyb3d8bbwe)_: license extracted from Microsoft's VLSC (Volume Licensing Service Center) issued on 2021-06-22T00:38:33.3092642Z.
+
 - **NVIDIA Control Panel** _(NVIDIACorp.NVIDIAControlPanel_56jybvy8sckqj)_: license extracted from HP recovery media issued on 2022-01-17T11:35:32.7606232Z.
 
 - **SynLenovoLBGDApp** _(SynapticsIncorporated.SynLenovoLBGDApp_807d65c4rvak2)_: bundled and self-signed APPX (script to extract CERT from APPX, add to Trusted People cert store and deploy it included).
