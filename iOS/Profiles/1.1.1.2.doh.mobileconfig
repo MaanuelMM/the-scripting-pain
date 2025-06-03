@@ -5,7 +5,7 @@
         <key>ConsentText</key>
         <dict>
             <key>default</key>
-            <string>Cloudflare's one.one.one.one is a free service that replaces your default ISP or enterprise Domain Name Server (DNS) configuration. For additional information on one.one.one.one see https://one.one.one.one</string>
+            <string>1.1.1.1 is Cloudflare’s public DNS resolver. It offers a fast and private way to browse the Internet. More info: https://one.one.one.one/dns/</string>
         </dict>
         <key>PayloadContent</key>
         <array>
@@ -24,8 +24,30 @@
                     <key>ServerURL</key>
                     <string>https://security.cloudflare-dns.com/dns-query</string>
                 </dict>
+			<key>OnDemandRules</key>
+			<array>
+				<dict>
+					<key>Action</key>
+					<string>EvaluateConnection</string>
+					<key>ActionParameters</key>
+					<array>
+						<dict>
+							<key>DomainAction</key>
+							<string>NeverConnect</string>
+							<key>Domains</key>
+							<array>
+								<string>malware.testcategory.com</string>
+							</array>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>Action</key>
+					<string>Connect</string>
+				</dict>
+			</array>
                 <key>PayloadDisplayName</key>
-                <string>Cloudflare Public DNS over HTTPS with Malware Blocking</string>
+                <string>Cloudflare's public DNS over HTTPS resolver with Malware Blocking</string>
                 <key>PayloadIdentifier</key>
                 <string>com.apple.dnsSettings.managed.91B7B647-F24F-4FCD-9817-C6E1D1EDCED5</string>
                 <key>PayloadType</key>
@@ -37,11 +59,11 @@
             </dict>
         </array>
         <key>PayloadDescription</key>
-        <string>Configures device to use Cloudflare Public DNS over HTTPS (DoH) with Malware Blocking.</string>
+        <string>Configures device to use Cloudflare's public DNS over HTTPS (DoH) resolver with Malware Blocking.</string>
         <key>PayloadDisplayName</key>
-        <string>Cloudflare Public DNS over HTTPS with Malware Blocking</string>
+        <string>Cloudflare's public DNS over HTTPS resolver with Malware Blocking</string>
         <key>PayloadIdentifier</key>
-        <string>com.cloudflare.onedotonedotonedotone.5868FEF0-C8AE-4F09-ADD6-2842D2E5D1EA</string>
+        <string>com.cloudflare.dns.doh.security.5868FEF0-C8AE-4F09-ADD6-2842D2E5D1EA</string>
         <key>PayloadOrganization</key>
         <string>Cloudflare, Inc.</string>
         <key>PayloadScope</key>
