@@ -59,8 +59,7 @@
             </dict>
         </array>
         <key>PayloadDescription</key>
-        <string>Configures device to use Cloudflare's public DNS over TLS (DoT) resolver with
-            Malware Blocking.</string>
+        <string>Configures device to use Cloudflare's public DNS over TLS (DoT) resolver with Malware Blocking.</string>
         <key>PayloadDisplayName</key>
         <string>Cloudflare's public DNS over TLS resolver with Malware Blocking</string>
         <key>PayloadIdentifier</key>
