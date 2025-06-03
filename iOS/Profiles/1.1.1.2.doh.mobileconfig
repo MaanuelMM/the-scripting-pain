@@ -24,28 +24,28 @@
                     <key>ServerURL</key>
                     <string>https://security.cloudflare-dns.com/dns-query</string>
                 </dict>
-			<key>OnDemandRules</key>
-			<array>
-				<dict>
-					<key>Action</key>
-					<string>EvaluateConnection</string>
-					<key>ActionParameters</key>
-					<array>
-						<dict>
-							<key>DomainAction</key>
-							<string>NeverConnect</string>
-							<key>Domains</key>
-							<array>
-								<string>malware.testcategory.com</string>
-							</array>
-						</dict>
-					</array>
-				</dict>
-				<dict>
-					<key>Action</key>
-					<string>Connect</string>
-				</dict>
-			</array>
+                <key>OnDemandRules</key>
+                <array>
+                    <dict>
+                        <key>Action</key>
+                        <string>EvaluateConnection</string>
+                        <key>ActionParameters</key>
+                        <array>
+                            <dict>
+                                <key>DomainAction</key>
+                                <string>NeverConnect</string>
+                                <key>Domains</key>
+                                <array>
+                                    <string>malware.testcategory.com</string>
+                                </array>
+                            </dict>
+                        </array>
+                    </dict>
+                    <dict>
+                        <key>Action</key>
+                        <string>Connect</string>
+                    </dict>
+                </array>
                 <key>PayloadDisplayName</key>
                 <string>Cloudflare's public DNS over HTTPS resolver with Malware Blocking</string>
                 <key>PayloadIdentifier</key>
@@ -59,7 +59,8 @@
             </dict>
         </array>
         <key>PayloadDescription</key>
-        <string>Configures device to use Cloudflare's public DNS over HTTPS (DoH) resolver with Malware Blocking.</string>
+        <string>Configures device to use Cloudflare's public DNS over HTTPS (DoH) resolver with
+            Malware Blocking.</string>
         <key>PayloadDisplayName</key>
         <string>Cloudflare's public DNS over HTTPS resolver with Malware Blocking</string>
         <key>PayloadIdentifier</key>
