@@ -36,11 +36,7 @@
                                 <string>NeverConnect</string>
                                 <key>Domains</key>
                                 <array>
-                                    <string>commandandcontrolandbotnet.testcategory.com</string>
-                                    <string>cryptomining.testcategory.com</string>
                                     <string>malware.testcategory.com</string>
-                                    <string>phishing.testcategory.com</string>
-                                    <string>spam.testcategory.com</string>
                                 </array>
                             </dict>
                         </array>
